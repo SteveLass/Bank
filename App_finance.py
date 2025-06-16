@@ -7,15 +7,15 @@ st.title("🔍 Prédiction de l'inclusion financière en Afrique")
 
 # 🔒 Vérification des fichiers nécessaires
 if not os.path.exists("inclusion_model.pkl"):
-    st.error("❌ Le fichier 'inclusion_model.pkl' est introuvable. Veuillez l’ajouter au dépôt GitHub.")
+    st.error("❌ Le fichier 'inclusion_model.pkl1' est introuvable. Veuillez l’ajouter au dépôt GitHub.")
     st.stop()
 
 if not os.path.exists("encoders.pkl"):
-    st.error("❌ Le fichier 'encoders.pkl' est introuvable. Veuillez l’ajouter au dépôt GitHub.")
+    st.error("❌ Le fichier 'encoders.pkl1' est introuvable. Veuillez l’ajouter au dépôt GitHub.")
     st.stop()
 
 # ✅ Chargement du modèle et des encodeurs
-model = joblib.load("inclusion_model.pkl")
+model = joblib.load("inclusion_model.pkl1")
 le_dict = joblib.load("encoders.pkl")
 
 # 📝 Interface utilisateur
