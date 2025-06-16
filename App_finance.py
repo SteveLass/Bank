@@ -1,14 +1,24 @@
 import streamlit as st
 import joblib
 import numpy as np
+import os
 
-# Charger le modèle et les encodeurs
+st.title("🔍 Prédiction de l'inclusion financière en Afrique")
+
+# 🔒 Vérification des fichiers nécessaires
+if not os.path.exists("inclusion_model.pkl"):
+    st.error("❌ Le fichier 'inclusion_model.pkl' est introuvable. Veuillez l’ajouter au dépôt GitHub.")
+    st.stop()
+
+if not os.path.exists("encoders.pkl"):
+    st.error("❌ Le fichier 'encoders.pkl' est introuvable. Veuillez l’ajouter au dépôt GitHub.")
+    st.stop()
+
+# ✅ Chargement du modèle et des encodeurs
 model = joblib.load("inclusion_model.pkl")
 le_dict = joblib.load("encoders.pkl")
 
-st.title("🔍 Prédiction de l'inclusion financière")
-
-# Saisie utilisateur
+# 📝 Interface utilisateur
 location = st.selectbox("Zone", le_dict['location_type'].classes_.tolist())
 cellphone = st.selectbox("Accès téléphone", le_dict['cellphone_access'].classes_.tolist())
 household_size = st.number_input("Taille du foyer", min_value=1)
@@ -19,7 +29,7 @@ marital = st.selectbox("Statut matrimonial", le_dict['marital_status'].classes_.
 education = st.selectbox("Niveau d’éducation", le_dict['education_level'].classes_.tolist())
 job = st.selectbox("Type d’emploi", le_dict['job_type'].classes_.tolist())
 
-# Transformer en valeurs numériques
+# 🔄 Encodage des variables
 location = le_dict['location_type'].transform([location])[0]
 cellphone = le_dict['cellphone_access'].transform([cellphone])[0]
 gender = le_dict['gender_of_respondent'].transform([gender])[0]
@@ -28,10 +38,13 @@ marital = le_dict['marital_status'].transform([marital])[0]
 education = le_dict['education_level'].transform([education])[0]
 job = le_dict['job_type'].transform([job])[0]
 
-# Créer l’entrée pour la prédiction
+# 📊 Construction des features
 features = np.array([[location, cellphone, household_size, age, gender, relation, marital, education, job]])
 
-# Prédiction
+# 🔮 Prédiction
 if st.button("Prédire"):
     pred = model.predict(features)[0]
-    st.success("✅ Cette personne est incluse financièrement." if pred == 1 else "❌ Cette personne n’a pas de compte bancaire.")
+    if pred == 1:
+        st.success("✅ Cette personne est incluse financièrement (possède un compte bancaire).")
+    else:
+        st.warning("❌ Cette personne **n’est pas** incluse financièrement (ne possède pas de compte bancaire).")
